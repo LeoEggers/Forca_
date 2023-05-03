@@ -173,4 +173,4 @@ while True:
 
 encerrar.play()
 print('Volte sempre!')
-sleep(2)  # para que haja tempo de tocar o som de encerramento.
+sleep(1.5)  # para que haja tempo de tocar o som de encerramento.
