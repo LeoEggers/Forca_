@@ -146,7 +146,6 @@ while True:
             # acentuado já está implementada.
             #
             # if palpite in acento.keys():
-            #     print('procurando...')
             #     for ltr in acento[palpite]:
             #         if ltr in palavra:
             #             resp[palavra.index(ltr)] = ltr
