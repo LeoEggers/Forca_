@@ -79,6 +79,9 @@ facil = []
 medio = []
 dificil = []
 
+# Lista para converter caractere para caractere acentuado automaticamente.
+# acento = {'A': ['Á', 'Ã', 'Â'], 'E': ['É', 'Ê'], 'I': ['Í'], 'O': ['Ó', 'Õ', 'Ô'], 'U': ['Ú'], 'C': ['Ç']}
+
 # Criando uma lista de emojis para erros e acertos.
 emo_acerto = ['😍', '😁', '🤗', '👏', '🙌', '🤞', '☺️']
 emo_erro = ['😬', '😱', '😰', '😓', '😭', '😨', '😖']
@@ -137,6 +140,16 @@ while True:
             lista_tem.append(palpite)
             correto.play()
             print(f'\033[1;32mAcertou!\033[m {choice(emo_acerto)}')
+            # OBS.: Este trecho ainda não tem necessidade, pois a lista de palavras
+            # não possui palavras com acento ou cedilhas, mas caso isso mude futuramente
+            # uma função que substitui automaticamente um caractere para o caractere
+            # acentuado já está implementada.
+            #
+            # if palpite in acento.keys():
+            #     print('procurando...')
+            #     for ltr in acento[palpite]:
+            #         if ltr in palavra:
+            #             resp[palavra.index(ltr)] = ltr
             for indice, letra in enumerate(palavra):
                 if letra == palpite:
                     resp[indice] = palpite
