@@ -2,6 +2,64 @@ from random import choice
 import pygame
 from time import sleep
 
+
+def tent(t):
+    if t == 6:
+        print("  _____")
+        print(" |     |")
+        print(" |      ")
+        print(" |")
+        print(" |")
+        print("_|_")
+
+    if t == 5:
+        print("  _____")
+        print(" |     |")
+        print(" |     O")
+        print(" |      ")
+        print(" |     ")
+        print("_|_")
+
+    if t == 4:
+        print("  _____")
+        print(" |     |")
+        print(" |     O")
+        print(" |     |")
+        print(" |")
+        print("_|_")
+
+    if t == 3:
+        print("  _____")
+        print(" |     |")
+        print(" |     O")
+        print(" |    /|")
+        print(" |")
+        print("_|_")
+
+    if t == 2:
+        print("  _____")
+        print(" |     |")
+        print(" |     O")
+        print(" |    /|\\")
+        print(" |")
+        print("_|_")
+
+    if t == 1:
+        print("  _____")
+        print(" |     |")
+        print(" |     O")
+        print(" |    /|\\")
+        print(" |    /")
+        print("_|_")
+    if t == 0:
+        print("  _____")
+        print(" |     |")
+        print(" |     O")
+        print(" |    /|\\")
+        print(" |    / \\")
+        print("_|_")
+
+
 # Carregando os áudios.
 pygame.mixer.init()
 pygame.init()
@@ -95,60 +153,8 @@ while True:
             tentativas -= 1
             print(f'\033[1;31mErrou!\033[m {choice(emo_erro)}'
                   f'\n Tentativas restantes: {tentativas}')
-            if tentativas == 6:
-                print("  _____")
-                print(" |     |")
-                print(" |      ")
-                print(" |")
-                print(" |")
-                print("_|_")
-
-            if tentativas == 5:
-                print("  _____")
-                print(" |     |")
-                print(" |     O")
-                print(" |      ")
-                print(" |     ")
-                print("_|_")
-
-            if tentativas == 4:
-                print("  _____")
-                print(" |     |")
-                print(" |     O")
-                print(" |     |")
-                print(" |")
-                print("_|_")
-
-            if tentativas == 3:
-                print("  _____")
-                print(" |     |")
-                print(" |     O")
-                print(" |    /|")
-                print(" |")
-                print("_|_")
-
-            if tentativas == 2:
-                print("  _____")
-                print(" |     |")
-                print(" |     O")
-                print(" |    /|\\")
-                print(" |")
-                print("_|_")
-
-            if tentativas == 1:
-                print("  _____")
-                print(" |     |")
-                print(" |     O")
-                print(" |    /|\\")
-                print(" |    /")
-                print("_|_")
+            tent(tentativas)
             if tentativas == 0:
-                print("  _____")
-                print(" |     |")
-                print(" |     O")
-                print(" |    /|\\")
-                print(" |    / \\")
-                print("_|_")
                 print(f'\033[1;31mVocê perdeu...\033[m ☠️💔😢🥀💥 A palavra era {palavra}.')
                 pygame.mixer.music.stop()
                 gameover.play()
