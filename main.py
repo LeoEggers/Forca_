@@ -136,6 +136,7 @@ while True:
     lista_tem = []
 
     while True:
+        passe = False
         print(' '.join(resp))
         palpite = input('Letra: ').strip().upper()
 
@@ -151,15 +152,14 @@ while True:
             tentenovamente.play()
             continue
 
-        for k in acento.keys():
-            if palpite == k:
-                for ltr in acento[k]:
-                    if ltr in palavra:
-                        lista_tem.append(ltr)
-                        resp[palavra.index(ltr)] = ltr
-                        continue
+        if palpite in acento.keys():
+            for ltr in acento[palpite]:
+                if ltr in palavra:
+                    lista_tem.append(ltr)
+                    resp[palavra.index(ltr)] = ltr
+                    passe = True
 
-        if palpite in palavra:
+        if palpite in palavra or passe:
             lista_tem.append(palpite)
             correto.play()
             print(f'\033[1;32mAcertou!\033[m {choice(emo_acerto)}')
