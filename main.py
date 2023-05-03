@@ -80,7 +80,7 @@ medio = []
 dificil = []
 
 # Lista para converter caractere para caractere acentuado automaticamente.
-# acento = {'A': ['Á', 'Ã', 'Â'], 'E': ['É', 'Ê'], 'I': ['Í'], 'O': ['Ó', 'Õ', 'Ô'], 'U': ['Ú'], 'C': ['Ç']}
+acento = {'A': ['Á', 'Ã', 'Â'], 'E': ['É', 'Ê'], 'I': ['Í'], 'O': ['Ó', 'Õ', 'Ô'], 'U': ['Ú'], 'C': ['Ç']}
 
 # Criando uma lista de emojis para erros e acertos.
 emo_acerto = ['😍', '😁', '🤗', '👏', '🙌', '🤞', '☺️']
@@ -98,22 +98,37 @@ for line in palavras:
 
 # Inicia o jogo e escolhe a dificuldade.
 while True:
+    # Modo 1 ou 2 jogadores (2 jogadores, um deles escolhe a palavra):
     while True:
-        d = ['F', 'M', 'D']
-        dif = input('Dificuldade[F][M][D]: ').strip().upper()
-        if dif in d:
-            dif = dif[0]
+        md = ['1', '2']
+        modo = input('Quantos jogadores (1/2) : ').strip()
+        if modo in md:
+            modo = modo[0]
             confirma.play()
             break
         print('Tente novamente.')
         tentenovamente.play()
 
-    if dif == 'F':
-        palavra = choice(facil)
-    elif dif == 'M':
-        palavra = choice(medio)
+    if modo == '2':
+        palavra = input('Escolha uma palavra: ').strip().upper()
+        confirma.play()
     else:
-        palavra = choice(dificil)
+        while True:
+            d = ['F', 'M', 'D']
+            dif = input('Dificuldade[F][M][D]: ').strip().upper()
+            if dif in d:
+                dif = dif[0]
+                confirma.play()
+                break
+            print('Tente novamente.')
+            tentenovamente.play()
+
+        if dif == 'F':
+            palavra = choice(facil)
+        elif dif == 'M':
+            palavra = choice(medio)
+        else:
+            palavra = choice(dificil)
 
     tentativas = 7
     resp = ['_' for letra in palavra]
@@ -136,19 +151,18 @@ while True:
             tentenovamente.play()
             continue
 
+        for k in acento.keys():
+            if palpite == k:
+                for ltr in acento[k]:
+                    if ltr in palavra:
+                        lista_tem.append(ltr)
+                        resp[palavra.index(ltr)] = ltr
+                        continue
+
         if palpite in palavra:
             lista_tem.append(palpite)
             correto.play()
             print(f'\033[1;32mAcertou!\033[m {choice(emo_acerto)}')
-            # OBS.: Este trecho ainda não tem necessidade, pois a lista de palavras
-            # não possui palavras com acento ou cedilhas, mas caso isso mude futuramente
-            # uma função que substitui automaticamente um caractere para o caractere
-            # acentuado já está implementada.
-            #
-            # if palpite in acento.keys():
-            #     for ltr in acento[palpite]:
-            #         if ltr in palavra:
-            #             resp[palavra.index(ltr)] = ltr
             for indice, letra in enumerate(palavra):
                 if letra == palpite:
                     resp[indice] = palpite
