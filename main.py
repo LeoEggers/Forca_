@@ -68,7 +68,7 @@ def vermelho(msg):
     return f'\033[1;31m{msg}\033[m'
 
 
-# Carregando os áudios.
+# Carrega os áudios.
 pygame.mixer.init()
 pygame.init()
 pygame.mixer.music.load('trilha.mp3')
@@ -81,7 +81,7 @@ gameover = pygame.mixer.Sound('gameover.mp3')
 tentenovamente = pygame.mixer.Sound('tentenovamente.mp3')
 encerrar = pygame.mixer.Sound('encerrar.mp3')
 
-# Carregando as palavras e criando as listas das dificuldades.
+# Carrega as palavras e cria as listas das dificuldades.
 palavras = open("Lista-de-Palavras.txt")
 facil = []
 medio = []
@@ -90,11 +90,11 @@ dificil = []
 # Lista para converter caractere para caractere acentuado automaticamente.
 acento = {'A': ['Á', 'Ã', 'Â'], 'E': ['É', 'Ê'], 'I': ['Í'], 'O': ['Ó', 'Õ', 'Ô'], 'U': ['Ú'], 'C': ['Ç']}
 
-# Criando uma lista de emojis para erros e acertos.
+# Cria uma lista de emojis para erros e acertos.
 emo_acerto = ['😍', '😁', '🤗', '👏', '🙌', '🤞', '☺️']
 emo_erro = ['😬', '😱', '😰', '😓', '😭', '😨', '😖']
 
-# carregando a lista das dificuldades por extensão.
+# Carrega a lista das dificuldades por extensão.
 for line in palavras:
     line = line.strip()
     if 2 < len(line) <= 5:
@@ -106,7 +106,7 @@ for line in palavras:
 
 # Inicia o jogo e escolhe a dificuldade.
 while True:
-    # Modo 1 ou 2 jogadores (2 jogadores, um deles escolhe a palavra):
+    # Escolhe o número de jogadores.
     while True:
         md = ['1', '2']
         modo = input('Escolha o número de jogadores [1/2]: ').strip()
@@ -117,12 +117,12 @@ while True:
         print('Tente novamente.')
         tentenovamente.play()
 
-    # modo 2 jogadores, um dos jogadores escolhe a palavra.
+    # Modo 2 jogadores: um dos jogadores escolhe a palavra.
     if modo == '2':
         palavra = input('Escolha uma palavra: ').strip().upper()
         confirma.play()
 
-    # modo 1 jogador, palavra escolhida aleatoriamente, o jogador escolhe a dificuldade.
+    # Modo 1 jogador: palavra escolhida aleatoriamente, o jogador escolhe a dificuldade.
     else:
         while True:
             d = ['F', 'M', 'D']
@@ -141,13 +141,14 @@ while True:
         else:
             palavra = choice(dificil)
 
-    # cria uma sequência de underlines, um para cada letra da palavra escolhida.
-    # cria as listas tem/não tem, estabelece o número de tentativas
+    # Cria uma sequência de underlines, um para cada letra da palavra escolhida.
+    # Cria as listas tem/não tem, estabelece o número de tentativas.
     tentativas = 7
     resp = ['_' for letra in palavra]
     lista_naotem = []
     lista_tem = []
 
+    # Começa o jogo / coleta e trata o palpite.
     while True:
         print(' '.join(resp))
         palpite = input('Letra: ').strip().upper()
@@ -164,7 +165,7 @@ while True:
             tentenovamente.play()
             continue
 
-        # substitui caracteres sem acento por caracteres acentuados, caso existam.
+        # Substitui caracteres sem acento por caracteres acentuados, caso existam.
         passe = False
         if palpite in acento:
             for ltr in acento[palpite]:
