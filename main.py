@@ -60,6 +60,14 @@ def tent(t):
         print("_|_")
 
 
+def verde(msg):
+    return f'\033[1;32m{msg}\033[m'
+
+
+def vermelho(msg):
+    return f'\033[1;31m{msg}\033[m'
+
+
 # Carregando os áudios.
 pygame.mixer.init()
 pygame.init()
@@ -101,7 +109,7 @@ while True:
     # Modo 1 ou 2 jogadores (2 jogadores, um deles escolhe a palavra):
     while True:
         md = ['1', '2']
-        modo = input('Quantos jogadores (1/2) : ').strip()
+        modo = input('Escolha o número de jogadores [1/2]: ').strip()
         if modo in md:
             modo = modo[0]
             confirma.play()
@@ -109,9 +117,12 @@ while True:
         print('Tente novamente.')
         tentenovamente.play()
 
+    # modo 2 jogadores, um dos jogadores escolhe a palavra.
     if modo == '2':
         palavra = input('Escolha uma palavra: ').strip().upper()
         confirma.play()
+
+    # modo 1 jogador, palavra escolhida aleatoriamente, o jogador escolhe a dificuldade.
     else:
         while True:
             d = ['F', 'M', 'D']
@@ -130,13 +141,14 @@ while True:
         else:
             palavra = choice(dificil)
 
+    # cria uma sequência de underlines, um para cada letra da palavra escolhida.
+    # cria as listas tem/não tem, estabelece o número de tentativas
     tentativas = 7
     resp = ['_' for letra in palavra]
     lista_naotem = []
     lista_tem = []
 
     while True:
-        passe = False
         print(' '.join(resp))
         palpite = input('Letra: ').strip().upper()
 
@@ -152,17 +164,19 @@ while True:
             tentenovamente.play()
             continue
 
-        if palpite in acento.keys():
+        # substitui caracteres sem acento por caracteres acentuados, caso existam.
+        passe = False
+        if palpite in acento:
             for ltr in acento[palpite]:
                 if ltr in palavra:
                     lista_tem.append(ltr)
                     resp[palavra.index(ltr)] = ltr
                     passe = True
 
-        if palpite in palavra or passe:
+        if palpite in palavra or passe:  # o passe serve para aceitar o caractere acentuado como se fosse sem acento.
             lista_tem.append(palpite)
             correto.play()
-            print(f'\033[1;32mAcertou!\033[m {choice(emo_acerto)}')
+            print(verde('Acertou!'), f'{choice(emo_acerto)}')
             for indice, letra in enumerate(palavra):
                 if letra == palpite:
                     resp[indice] = palpite
@@ -170,22 +184,23 @@ while True:
                 pygame.mixer.music.stop()
                 vitoria.play()
                 print(' '.join(resp))
-                print('\033[1;32mParabéns! Você venceu!\033[m 🥳😎✨🏆🎊🎉')
+                print(verde('Parabéns! Você venceu!'), '🥳😎✨🏆🎊🎉')
                 break
         else:
             lista_naotem.append(palpite)
             erro.play()
             print(f'{lista_naotem}')
             tentativas -= 1
-            print(f'\033[1;31mErrou!\033[m {choice(emo_erro)}'
-                  f'\n Tentativas restantes: {tentativas}')
-            tent(tentativas)
+            print(vermelho('Errou!'), f'{choice(emo_erro)}'
+                                      f'\n Tentativas restantes: {tentativas}')
+            tent(tentativas)  # Mostra a forca
             if tentativas == 0:
-                print(f'\033[1;31mVocê perdeu...\033[m ☠️💔😢🥀💥 A palavra era {palavra}.')
+                print(vermelho('Você perdeu...'), f'☠️💔😢🥀💥 A palavra era {palavra}.')
                 pygame.mixer.music.stop()
                 gameover.play()
                 break
 
+    # Configura o 'restart'.
     while True:
         dnv = ['S', 'N']
         denovo = input('Quer jogar de novo? [S/N]: ').upper().strip()
