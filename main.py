@@ -174,14 +174,14 @@ while True:
                     resp[palavra.index(ltr)] = ltr
                     passe = True
 
-        if palpite in palavra or passe:  # o passe serve para aceitar o caractere acentuado como se fosse sem acento.
+        if palpite in palavra or passe:  # O 'passe' serve para aceitar o caractere acentuado como se fosse sem acento.
             lista_tem.append(palpite)
             correto.play()
             print(verde('Acertou!'), f'{choice(emo_acerto)}')
             for indice, letra in enumerate(palavra):
                 if letra == palpite:
                     resp[indice] = palpite
-            if '_' not in resp:
+            if '_' not in resp:  # Condição de vitória.
                 pygame.mixer.music.stop()
                 vitoria.play()
                 print(' '.join(resp))
@@ -195,7 +195,7 @@ while True:
             print(vermelho('Errou!'), f'{choice(emo_erro)}'
                                       f'\n Tentativas restantes: {tentativas}')
             tent(tentativas)  # Mostra a forca
-            if tentativas == 0:
+            if tentativas == 0:  # Condição de derrota.
                 print(vermelho('Você perdeu...'), f'☠️💔😢🥀💥 A palavra era {palavra}.')
                 pygame.mixer.music.stop()
                 gameover.play()
