@@ -104,6 +104,10 @@ for line in palavras:
     elif len(line) > 8:
         dificil.append(line)
 
+cont_vit = 0  # guarda o número de vitórias consecutivas (modo 1 jogador)
+with open('melhor.txt', 'r') as arquivo_melhor:
+    melhor = int(arquivo_melhor.read())  # guarda o maior número de vitórias consecutivas (modo 1 jogador)
+
 # Inicia o jogo e escolhe a dificuldade.
 while True:
     # Escolhe o número de jogadores.
@@ -186,6 +190,14 @@ while True:
                 vitoria.play()
                 print(' '.join(resp))
                 print(verde('Parabéns! Você venceu!'), '🥳😎✨🏆🎊🎉')
+                if modo == '1':
+                    cont_vit += 1
+                    if cont_vit > melhor:
+                        melhor = cont_vit
+                    with open('melhor.txt', 'w') as arquivo_melhor:
+                        arquivo_melhor.write(str(melhor))  # substitui o arquivo para manter o melhor nos próximos jogos
+                    print(f'Vamos lá! Você ganhou {cont_vit}x consecutivamente.')
+                    print(f'Melhor até agora: {melhor}')
                 break
         else:
             lista_naotem.append(palpite)
@@ -199,6 +211,10 @@ while True:
                 print(vermelho('Você perdeu...'), f'☠️💔😢🥀💥 A palavra era {palavra}.')
                 pygame.mixer.music.stop()
                 gameover.play()
+                if modo == '1':
+                    print(f'Vitórias consecutivas: {cont_vit}.')
+                    print(f'Melhor até agora: {melhor}')
+                    cont_vit = 0
                 break
 
     # Configura o 'restart'.
