@@ -108,7 +108,7 @@ cont_vit = 0  # guarda o número de vitórias consecutivas (modo 1 jogador)
 with open('melhor.txt', 'r') as arquivo_melhor:
     melhor = int(arquivo_melhor.read())  # guarda o maior número de vitórias consecutivas (modo 1 jogador)
 
-# Inicia o jogo e escolhe a dificuldade.
+# Início do programa.
 while True:
     # Escolhe o número de jogadores.
     while True:
@@ -174,9 +174,11 @@ while True:
         if palpite in acento:
             for ltr in acento[palpite]:
                 if ltr in palavra:
-                    lista_tem.append(ltr)
-                    resp[palavra.index(ltr)] = ltr
                     passe = True
+                    lista_tem.append(ltr)
+                    for c in range(len(palavra)):
+                        if ltr == palavra[c]:
+                            resp[c] = ltr
 
         if palpite in palavra or passe:  # O 'passe' serve para aceitar o caractere acentuado como se fosse sem acento.
             lista_tem.append(palpite)
