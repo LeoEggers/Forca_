@@ -104,7 +104,11 @@ for line in palavras:
     elif len(line) > 8:
         dificil.append(line)
 
-# Inicia o jogo e escolhe a dificuldade.
+cont_vit = 0  # guarda o número de vitórias consecutivas (modo 1 jogador)
+with open('melhor.txt', 'r') as arquivo_melhor:
+    melhor = int(arquivo_melhor.read())  # guarda o maior número de vitórias consecutivas (modo 1 jogador)
+
+# Início do programa.
 while True:
     # Escolhe o número de jogadores.
     while True:
@@ -170,22 +174,32 @@ while True:
         if palpite in acento:
             for ltr in acento[palpite]:
                 if ltr in palavra:
-                    lista_tem.append(ltr)
-                    resp[palavra.index(ltr)] = ltr
                     passe = True
+                    lista_tem.append(ltr)
+                    for c in range(len(palavra)):
+                        if ltr == palavra[c]:
+                            resp[c] = ltr
 
-        if palpite in palavra or passe:  # o passe serve para aceitar o caractere acentuado como se fosse sem acento.
+        if palpite in palavra or passe:  # O 'passe' serve para aceitar o caractere acentuado como se fosse sem acento.
             lista_tem.append(palpite)
             correto.play()
             print(verde('Acertou!'), f'{choice(emo_acerto)}')
             for indice, letra in enumerate(palavra):
                 if letra == palpite:
                     resp[indice] = palpite
-            if '_' not in resp:
+            if '_' not in resp:  # Condição de vitória.
                 pygame.mixer.music.stop()
                 vitoria.play()
                 print(' '.join(resp))
                 print(verde('Parabéns! Você venceu!'), '🥳😎✨🏆🎊🎉')
+                if modo == '1':
+                    cont_vit += 1
+                    if cont_vit > melhor:
+                        melhor = cont_vit
+                    with open('melhor.txt', 'w') as arquivo_melhor:
+                        arquivo_melhor.write(str(melhor))  # substitui o arquivo para manter o melhor nos próximos jogos
+                    print(f'Vamos lá! Você ganhou {cont_vit}x consecutivamente.')
+                    print(f'Melhor até agora: {melhor}')
                 break
         else:
             lista_naotem.append(palpite)
@@ -195,10 +209,14 @@ while True:
             print(vermelho('Errou!'), f'{choice(emo_erro)}'
                                       f'\n Tentativas restantes: {tentativas}')
             tent(tentativas)  # Mostra a forca
-            if tentativas == 0:
+            if tentativas == 0:  # Condição de derrota.
                 print(vermelho('Você perdeu...'), f'☠️💔😢🥀💥 A palavra era {palavra}.')
                 pygame.mixer.music.stop()
                 gameover.play()
+                if modo == '1':
+                    print(f'Vitórias consecutivas: {cont_vit}.')
+                    print(f'Melhor até agora: {melhor}')
+                    cont_vit = 0
                 break
 
     # Configura o 'restart'.
