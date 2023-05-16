@@ -60,6 +60,28 @@ def tent(t):
         print("_|_")
 
 
+def append_lista(categ):
+    if categ == '1':
+        escolha = "listas/atores_atrizes.txt"
+    elif categ == '2':
+        escolha = "listas/filmes.txt"
+    elif categ == '3':
+        escolha = "listas/animais.txt"
+    elif categ == '4':
+        escolha = "listas/paises.txt"
+    else:
+        escolha = "listas/artistas_bandas.txt"
+
+    with open(escolha, 'r', encoding='utf-8') as palavras_cat:
+        lista_escolha = []
+        for linha in palavras_cat:
+            linha = linha.upper().strip()
+            lista_escolha.append(linha)
+        plvr = choice(lista_escolha)
+        palavras_cat.close()
+    return plvr
+
+
 def verde(msg):
     return f'\033[1;32m{msg}\033[m'
 
@@ -71,40 +93,45 @@ def vermelho(msg):
 # Carrega os áudios.
 pygame.mixer.init()
 pygame.init()
-pygame.mixer.music.load('trilha.mp3')
+pygame.mixer.music.load('Sons/trilha.mp3')
 pygame.mixer.music.play(-1)
-confirma = pygame.mixer.Sound('confirma.mp3')
-correto = pygame.mixer.Sound('correto.mp3')
-erro = pygame.mixer.Sound('erro.mp3')
-vitoria = pygame.mixer.Sound('victory.mp3')
-gameover = pygame.mixer.Sound('gameover.mp3')
-tentenovamente = pygame.mixer.Sound('tentenovamente.mp3')
-encerrar = pygame.mixer.Sound('encerrar.mp3')
+confirma = pygame.mixer.Sound('Sons/confirma.mp3')
+correto = pygame.mixer.Sound('Sons/correto.mp3')
+erro = pygame.mixer.Sound('Sons/erro.mp3')
+vitoria = pygame.mixer.Sound('Sons/victory.mp3')
+gameover = pygame.mixer.Sound('Sons/gameover.mp3')
+tentenovamente = pygame.mixer.Sound('Sons/tentenovamente.mp3')
+encerrar = pygame.mixer.Sound('Sons/encerrar.mp3')
 
 # Carrega as palavras e cria as listas das dificuldades.
-palavras = open("Lista-de-Palavras.txt")
-facil = []
-medio = []
-dificil = []
+with open("listas/Lista-de-Palavras.txt") as palavras:
+    facil = []
+    medio = []
+    dificil = []
+    for line in palavras:
+        line = line.strip()
+        if 2 < len(line) <= 5:
+            facil.append(line)
+        elif 5 < len(line) <= 8:
+            medio.append(line)
+        elif len(line) > 8:
+            dificil.append(line)
+    palavras.close()
 
 # Lista para converter caractere para caractere acentuado automaticamente.
-acento = {'A': ['Á', 'Ã', 'Â'], 'E': ['É', 'Ê'], 'I': ['Í'], 'O': ['Ó', 'Õ', 'Ô'], 'U': ['Ú'], 'C': ['Ç']}
+acento = {'A': ['Á', 'À', 'Ã', 'Â', 'Ä'],
+          'E': ['É', 'Ê', 'È'],
+          'I': ['Í'],
+          'O': ['Ó', 'Õ', 'Ô', 'Ö'],
+          'U': ['Ú'],
+          'C': ['Ç']}
 
 # Cria uma lista de emojis para erros e acertos.
 emo_acerto = ['😍', '😁', '🤗', '👏', '🙌', '🤞', '☺️']
 emo_erro = ['😬', '😱', '😰', '😓', '😭', '😨', '😖']
 
-# Carrega a lista das dificuldades por extensão.
-for line in palavras:
-    line = line.strip()
-    if 2 < len(line) <= 5:
-        facil.append(line)
-    elif 5 < len(line) <= 8:
-        medio.append(line)
-    elif len(line) > 8:
-        dificil.append(line)
-
-cont_vit = 0  # guarda o número de vitórias consecutivas (modo 1 jogador)
+# guarda o número de vitórias consecutivas (modo 1 jogador)
+cont_vit = 0
 with open('melhor.txt', 'r') as arquivo_melhor:
     melhor = int(arquivo_melhor.read())  # guarda o maior número de vitórias consecutivas (modo 1 jogador)
 
@@ -129,8 +156,8 @@ while True:
     # Modo 1 jogador: palavra escolhida aleatoriamente, o jogador escolhe a dificuldade.
     else:
         while True:
-            d = ['F', 'M', 'D']
-            dif = input('Dificuldade[F][M][D]: ').strip().upper()
+            d = ['F', 'M', 'D', 'C']
+            dif = input('Dificuldade[F: Fácil][M: Médio][D: Difícil][C: Por Categoria]: ').strip().upper()
             if dif in d:
                 dif = dif[0]
                 confirma.play()
@@ -142,13 +169,33 @@ while True:
             palavra = choice(facil)
         elif dif == 'M':
             palavra = choice(medio)
-        else:
+        elif dif == 'D':
             palavra = choice(dificil)
+        else:
+            while True:
+                cat = ['1', '2', '3', '4', '5']
+                categoria = input('Escolha uma categoria: [1]Atores-Atrizes'' / '
+                                  '[2]Filmes / '
+                                  '[3]Animais / '
+                                  '[4]Países / '
+                                  '[5]Músicos-Bandas: ').strip()
+                if categoria in cat:
+                    categoria = categoria[0]
+                    confirma.play()
+                    break
+                print('Tente novamente.')
+                tentenovamente.play()
+
+            palavra = append_lista(categoria)
 
     # Cria uma sequência de underlines, um para cada letra da palavra escolhida.
     # Cria as listas tem/não tem, estabelece o número de tentativas.
     tentativas = 7
     resp = ['_' for letra in palavra]
+    # Espaços não viram underline:
+    for c in range(len(palavra)):
+        if palavra[c] == ' ':
+            resp[c] = ' '
     lista_naotem = []
     lista_tem = []
 
