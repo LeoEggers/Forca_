@@ -100,6 +100,7 @@ correto = pygame.mixer.Sound('Sons/correto.mp3')
 erro = pygame.mixer.Sound('Sons/erro.mp3')
 vitoria = pygame.mixer.Sound('Sons/victory.mp3')
 gameover = pygame.mixer.Sound('Sons/gameover.mp3')
+segredo = pygame.mixer.Sound('Sons/segredo.mp3')
 tentenovamente = pygame.mixer.Sound('Sons/tentenovamente.mp3')
 encerrar = pygame.mixer.Sound('Sons/encerrar.mp3')
 
@@ -200,16 +201,34 @@ while True:
     lista_tem = []
 
     # Começa o jogo / coleta e trata o palpite.
+    cont_dica = 0
     while True:
         print(' '.join(resp))
         palpite = input('Letra: ').strip().upper()
 
-        if not palpite.isalpha() and palpite != '-':
+        if not palpite.isalpha() and palpite != '-' and palpite != ';':
             print('Você não digitou uma letra. Tente novamente.')
             tentenovamente.play()
             continue
         else:
             palpite = palpite[0]
+
+        # implementa substituição automática (dica)
+        if palpite == ';':
+            if cont_dica == 0:
+                lista_dica = []
+                for c in range(len(resp)):
+                    if resp[c] == '_':
+                        lista_dica.append(c)
+                subst = choice(lista_dica)
+                resp[subst] = palavra[subst]
+                segredo.play()
+                cont_dica += 1
+                continue
+            else:
+                print('(Já te dei uma dica...)')
+                tentenovamente.play()
+                continue
 
         if palpite in lista_tem or palpite in lista_naotem:
             print('Você já tentou essa letra!')
@@ -245,7 +264,7 @@ while True:
                         melhor = cont_vit
                     with open('melhor.txt', 'w') as arquivo_melhor:
                         arquivo_melhor.write(str(melhor))  # substitui o arquivo para manter o melhor nos próximos jogos
-                    print(f'Vamos lá! Você ganhou {cont_vit}x consecutivamente.')
+                    print(f'Você ganhou {cont_vit}x consecutivamente.')
                     print(f'Melhor até agora: {melhor}')
                 break
         else:
