@@ -1,4 +1,6 @@
 from random import choice
+import os
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import pygame
 from time import sleep
 
@@ -60,6 +62,62 @@ def tent(t):
         print("_|_")
 
 
+def logo():
+    print(
+        "########################          --##########--        ####################--                @@################        --##########--")
+    sleep(0.81)
+    print(
+        "########################      ######################    ##########################        ######################    ######################")
+    sleep(0.81)
+    print(
+        "########################    ########################@@  ##########################      ########################  ##########################")
+    sleep(0.81)
+    print(
+        "########################    ##########################  ############################    ########################  ##########################")
+    sleep(0.81)
+    print(
+        "########################  ############################  ############################  @@########################  ##########################")
+    sleep(0.81)
+    print(
+        "                                              ##########                    ##########  ##########++                                ##########++")
+    sleep(0.81)
+    print(
+        "########################  ##########--      ##########  ############################  ##########                  ##########################++")
+    sleep(0.81)
+    print(
+        "########################  ##########--      ##########  ############################  ##########                  ##########################++")
+    sleep(0.81)
+    print(
+        "########################  ##########--      ##########  ##########################MM  ##########                  ##########################++")
+    sleep(0.81)
+    print(
+        "########################  ##########--      ##########  ##########################    ##########                  ##########################++")
+    sleep(0.81)
+    print(
+        "########################  ##########--      ##########  ######################        ##########                  ##########################++")
+    sleep(0.81)
+    print(
+        "##########                ##########--      ##########  ######################        ##########                  ##########      ##########++")
+    sleep(0.81)
+    print(
+        "##########                ##########++      ##########  ##########  ############      ##########--                ##########      ##########++       Por LvEggers")
+    sleep(0.81)
+    print(
+        "##########                MM##########################  ##########  @@##########      ##########################  ##########      ##########++")
+    sleep(0.81)
+    print(
+        "##########                  ##########################  ##########    ############      ########################  ##########      ##########++")
+    sleep(0.81)
+    print(
+        "##########                  ##########################  ##########      ##########mm    ########################  ##########      ##########++MM######################")
+    sleep(0.81)
+    print(
+        "##########                    ######################    ##########      ############      ######################  ##########      ##########++MM######################")
+    sleep(0.81)
+    print(
+        "##########                        ############++        ##########        ##########MM        ##################  ##########      ##########++MM######################")
+
+
 def append_lista(categ):
     if categ == '1':
         escolha = "listas/atores_atrizes.txt"
@@ -94,7 +152,6 @@ def vermelho(msg):
 pygame.mixer.init()
 pygame.init()
 pygame.mixer.music.load('Sons/trilha.mp3')
-pygame.mixer.music.play(-1)
 confirma = pygame.mixer.Sound('Sons/confirma.mp3')
 correto = pygame.mixer.Sound('Sons/correto.mp3')
 erro = pygame.mixer.Sound('Sons/erro.mp3')
@@ -103,6 +160,13 @@ gameover = pygame.mixer.Sound('Sons/gameover.mp3')
 segredo = pygame.mixer.Sound('Sons/segredo.mp3')
 tentenovamente = pygame.mixer.Sound('Sons/tentenovamente.mp3')
 encerrar = pygame.mixer.Sound('Sons/encerrar.mp3')
+intro = pygame.mixer.Sound('Sons/intro.mp3')
+
+intro.play()
+logo()
+
+sleep(2)
+pygame.mixer.music.play(-1)
 
 # Carrega as palavras e cria as listas das dificuldades.
 with open("listas/Lista-de-Palavras.txt") as palavras:
@@ -206,7 +270,7 @@ while True:
         print(' '.join(resp))
         palpite = input('Letra: ').strip().upper()
 
-        if not palpite.isalpha() and palpite != '-' and palpite != ';':
+        if not palpite.isalpha() and palpite not in ['-', ';']:
             print('Você não digitou uma letra. Tente novamente.')
             tentenovamente.play()
             continue
