@@ -100,7 +100,7 @@ def logo():
         "##########                ##########--      ##########  ######################        ##########                  ##########      ##########++")
     sleep(0.81)
     print(
-        "##########                ##########++      ##########  ##########  ############      ##########--                ##########      ##########++")
+        "##########                ##########++      ##########  ##########  ############      ##########--                ##########      ##########++       Por LvEggers")
     sleep(0.81)
     print(
         "##########                MM##########################  ##########  @@##########      ##########################  ##########      ##########++")
@@ -270,7 +270,7 @@ while True:
         print(' '.join(resp))
         palpite = input('Letra: ').strip().upper()
 
-        if not palpite.isalpha() and palpite != '-' and palpite != ';':
+        if not palpite.isalpha() and palpite not in ['-', ';']:
             print('Você não digitou uma letra. Tente novamente.')
             tentenovamente.play()
             continue
