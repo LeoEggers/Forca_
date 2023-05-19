@@ -5,6 +5,23 @@ import pygame
 from time import sleep
 
 
+def carregar_palavras():
+    with open("listas/Lista-de-Palavras.txt") as plvrs:
+        fcl = []
+        med = []
+        dfcl = []
+        for line in plvrs:
+            line = line.strip()
+            if 2 < len(line) <= 5:
+                fcl.append(line)
+            elif 5 < len(line) <= 8:
+                med.append(line)
+            elif len(line) > 8:
+                dfcl.append(line)
+        plvrs.close()
+        return fcl, med, dfcl
+
+
 def tent(t):
     if t == 6:
         print("  _____")
@@ -118,19 +135,19 @@ def logo():
         "##########                        ############++        ##########        ##########MM        ##################  ##########      ##########++MM######################")
 
 
-def append_lista(categ):
+def carregar_palavras_categoria(categ):
     if categ == '1':
-        escolha = "listas/atores_atrizes.txt"
+        lista_cat = "listas/atores_atrizes.txt"
     elif categ == '2':
-        escolha = "listas/filmes.txt"
+        lista_cat = "listas/filmes.txt"
     elif categ == '3':
-        escolha = "listas/animais.txt"
+        lista_cat = "listas/animais.txt"
     elif categ == '4':
-        escolha = "listas/paises.txt"
+        lista_cat = "listas/paises.txt"
     else:
-        escolha = "listas/artistas_bandas.txt"
+        lista_cat = "listas/artistas_bandas.txt"
 
-    with open(escolha, 'r', encoding='utf-8') as palavras_cat:
+    with open(lista_cat, 'r', encoding='utf-8') as palavras_cat:
         lista_escolha = []
         for linha in palavras_cat:
             linha = linha.upper().strip()
@@ -159,29 +176,17 @@ vitoria = pygame.mixer.Sound('Sons/victory.mp3')
 gameover = pygame.mixer.Sound('Sons/gameover.mp3')
 segredo = pygame.mixer.Sound('Sons/segredo.mp3')
 tentenovamente = pygame.mixer.Sound('Sons/tentenovamente.mp3')
-encerrar = pygame.mixer.Sound('Sons/encerrar.mp3')
 intro = pygame.mixer.Sound('Sons/intro.mp3')
+encerrar = pygame.mixer.Sound('Sons/encerrar.mp3')
 
-intro.play()
-logo()
+# intro.play()
+# logo()
+
+# Carrega as palavras e cria as listas das dificuldades.
+facil, medio, dificil = carregar_palavras()
 
 sleep(2)
 pygame.mixer.music.play(-1)
-
-# Carrega as palavras e cria as listas das dificuldades.
-with open("listas/Lista-de-Palavras.txt") as palavras:
-    facil = []
-    medio = []
-    dificil = []
-    for line in palavras:
-        line = line.strip()
-        if 2 < len(line) <= 5:
-            facil.append(line)
-        elif 5 < len(line) <= 8:
-            medio.append(line)
-        elif len(line) > 8:
-            dificil.append(line)
-    palavras.close()
 
 # Lista para converter caractere para caractere acentuado automaticamente.
 acento = {'A': ['Á', 'À', 'Ã', 'Â', 'Ä'],
@@ -251,7 +256,7 @@ while True:
                 print('Tente novamente.')
                 tentenovamente.play()
 
-            palavra = append_lista(categoria)
+            palavra = carregar_palavras_categoria(categoria)
 
     # Cria uma sequência de underlines, um para cada letra da palavra escolhida.
     # Cria as listas tem/não tem, estabelece o número de tentativas.
@@ -280,10 +285,7 @@ while True:
         # implementa substituição automática (dica)
         if palpite == ';':
             if cont_dica == 0:
-                lista_dica = []
-                for c in range(len(resp)):
-                    if resp[c] == '_':
-                        lista_dica.append(c)
+                lista_dica = [c for c in range(len(resp)) if resp[c] == '_']
                 subst = choice(lista_dica)
                 resp[subst] = palavra[subst]
                 segredo.play()
@@ -328,6 +330,7 @@ while True:
                         melhor = cont_vit
                     with open('melhor.txt', 'w') as arquivo_melhor:
                         arquivo_melhor.write(str(melhor))  # substitui o arquivo para manter o melhor nos próximos jogos
+                        arquivo_melhor.close()
                     print(f'Você ganhou {cont_vit}x consecutivamente.')
                     print(f'Melhor até agora: {melhor}')
                 break
