@@ -4,6 +4,8 @@ import os
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import pygame
 
+# Funções:
+
 
 def carregar_listas():
     with open("listas/Lista-de-Palavras.txt") as plvrs:
@@ -107,7 +109,8 @@ def coletar_palpite():
         if not plpt.isalpha() and plpt not in ['-', ';']:
             print('Você não digitou uma letra. Tente novamente.')
             tentenovamente.play()
-        return plpt[0]
+        else:
+            return plpt[0]
 
 
 def exibir_forca(t):
@@ -240,6 +243,53 @@ def exibir_logo():
         "##################  ##########      ##########++MM######################")
 
 
+def resolver_dica(resp, plvr, dar_dic):
+    # retorna novos valores de resposta, venceu, dar_dica.
+    if dar_dic:
+        lista_dica = [n for n in range(len(resp)) if resp[n] == '_']
+        subst = choice(lista_dica)
+        resp[subst] = plvr[subst]
+        segredo.play()
+        if '_' not in resposta:
+            return resp, True, False
+    else:
+        print('(Já te dei uma dica...)')
+        tentenovamente.play()
+
+    return resp, False, False
+
+
+def vencer(mod, cont_v, mlhr):
+    pygame.mixer.music.stop()
+    vitoria.play()
+    print(' '.join(resposta))
+    print(verde('Parabéns! Você venceu!'), '🥳😎✨🏆🎊🎉')
+    if mod == '1':
+        cont_v += 1
+        if cont_v > mlhr:
+            mlhr = cont_v
+        with open('melhor.txt', 'w') as arq_melhor:
+            arq_melhor.write(str(mlhr))  # substitui o arquivo para manter o melhor nos próximos jogos
+            arq_melhor.close()
+        print(f'Você ganhou {cont_v}x consecutivamente.')
+        print(f'Melhor até agora: {mlhr}')
+        return cont_v
+
+
+def perder(mod, cont_v):
+    print(vermelho('Você perdeu...'), f'☠️💔😢🥀💥 A palavra era {palavra}.')
+    pygame.mixer.music.stop()
+    gameover.play()
+    if mod == '1':
+        print(f'Vitórias consecutivas: {cont_v}.')
+        with open('melhor.txt', 'r') as arq_melhor:
+            mlhr = arq_melhor.read()
+            arq_melhor.close()
+        print(f'Melhor até agora: {mlhr}')
+        cont_v = 0
+    return cont_v
+
+
 def verde(msg):
     return f'\033[1;32m{msg}\033[m'
 
@@ -248,7 +298,7 @@ def vermelho(msg):
     return f'\033[1;31m{msg}\033[m'
 
 
-# Carrega os áudios.
+# Áudios.
 pygame.mixer.init()
 pygame.init()
 pygame.mixer.music.load('Sons/trilha.mp3')
@@ -262,14 +312,14 @@ tentenovamente = pygame.mixer.Sound('Sons/tentenovamente.mp3')
 intro = pygame.mixer.Sound('Sons/intro.mp3')
 encerrar = pygame.mixer.Sound('Sons/encerrar.mp3')
 
-# intro.play()
-# exibir_logo()
+# Introdução.
+intro.play()
+exibir_logo()
+sleep(2)
+pygame.mixer.music.play(-1)
 
 # Carrega as palavras e cria as listas das dificuldades.
 facil, medio, dificil = carregar_listas()
-
-sleep(2)
-pygame.mixer.music.play(-1)
 
 # Dicionário para converter caractere para caractere acentuado automaticamente.
 acento = {'A': ['Á', 'À', 'Ã', 'Â', 'Ä'],
@@ -295,6 +345,8 @@ while True:
     dar_dica = True
     lista_naotem = []
     lista_tem = []
+    perdeu = False
+    venceu = False
 
     # Escolhe o número de jogadores.
     modo = num_jogadores()
@@ -303,28 +355,29 @@ while True:
     palavra = carregar_palavra()
 
     # Cria underlines para cada letra da palavra selecionada, ignorando os espaços.
-    resp = [' ' if letra == ' ' else '_' for letra in palavra]
+    resposta = [' ' if letra == ' ' else '_' for letra in palavra]
 
     # Começa o jogo.
     while True:
-        print(' '.join(resp))
+
+        # Confere os booleans "venceu"/"perdeu".
+        if venceu:
+            cont_vit = vencer(modo, cont_vit, melhor)
+            break
+
+        if perdeu:
+            cont_vit = perder(modo, cont_vit)
+            break
+
+        print(' '.join(resposta))
 
         # Coleta e trata o palpite.
         palpite = coletar_palpite()
 
         # Resolve o pedido por dica (substituição automática).
         if palpite == ';':
-            if dar_dica:
-                lista_dica = [c for c in range(len(resp)) if resp[c] == '_']
-                subst = choice(lista_dica)
-                resp[subst] = palavra[subst]
-                segredo.play()
-                dar_dica = False
-                continue
-            else:
-                print('(Já te dei uma dica...)')
-                tentenovamente.play()
-                continue
+            resposta, venceu, dar_dica = resolver_dica(resposta, palavra, dar_dica)
+            continue
 
         if palpite in lista_tem or palpite in lista_naotem:
             print('Você já tentou essa letra!')
@@ -340,30 +393,18 @@ while True:
                     lista_tem.append(ltr)
                     for c in range(len(palavra)):
                         if ltr == palavra[c]:
-                            resp[c] = ltr
+                            resposta[c] = ltr
 
+        # Verifica se o palpite está na palavra.
         if palpite in palavra or passe:  # O 'passe' serve para aceitar o caractere acentuado como se fosse sem acento.
             lista_tem.append(palpite)
             correto.play()
             print(verde('Acertou!'), f'{choice(emojis["acerto"])}')
             for indice, letra in enumerate(palavra):
                 if letra == palpite:
-                    resp[indice] = palpite
-            if '_' not in resp:  # Condição de vitória.
-                pygame.mixer.music.stop()
-                vitoria.play()
-                print(' '.join(resp))
-                print(verde('Parabéns! Você venceu!'), '🥳😎✨🏆🎊🎉')
-                if modo == '1':
-                    cont_vit += 1
-                    if cont_vit > melhor:
-                        melhor = cont_vit
-                    with open('melhor.txt', 'w') as arquivo_melhor:
-                        arquivo_melhor.write(str(melhor))  # substitui o arquivo para manter o melhor nos próximos jogos
-                        arquivo_melhor.close()
-                    print(f'Você ganhou {cont_vit}x consecutivamente.')
-                    print(f'Melhor até agora: {melhor}')
-                break
+                    resposta[indice] = palpite
+            if '_' not in resposta:  # Condição de vitória.
+                venceu = True
         else:
             lista_naotem.append(palpite)
             erro.play()
@@ -373,14 +414,7 @@ while True:
                                       f'\n Tentativas restantes: {tentativas}')
             exibir_forca(tentativas)  # Mostra a forca
             if tentativas == 0:  # Condição de derrota.
-                print(vermelho('Você perdeu...'), f'☠️💔😢🥀💥 A palavra era {palavra}.')
-                pygame.mixer.music.stop()
-                gameover.play()
-                if modo == '1':
-                    print(f'Vitórias consecutivas: {cont_vit}.')
-                    print(f'Melhor até agora: {melhor}')
-                    cont_vit = 0
-                break
+                perdeu = True
 
     # Configura o 'restart'.
     while True:
@@ -393,13 +427,15 @@ while True:
             break
         print('Tente novamente.')
         tentenovamente.play()
+
     if denovo == 'N':
         break
-    if denovo == 'S':
+    else:
         confirma.play()
         pygame.mixer.music.play(-1)
         continue
 
+# Fim.
 encerrar.play()
 print('Volte sempre!')
-sleep(1.5)  # para que haja tempo de tocar o som de encerramento.
+sleep(1.5)  # Para que haja tempo de tocar o som de encerramento.
