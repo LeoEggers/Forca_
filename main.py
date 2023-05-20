@@ -9,38 +9,24 @@ import pygame
 
 def carregar_listas():
     with open("listas/Lista-de-Palavras.txt") as plvrs:
-        fcl = []
-        med = []
-        dfcl = []
-        for line in plvrs:
-            line = line.strip()
-            if 2 < len(line) <= 5:
-                fcl.append(line)
-            elif 5 < len(line) <= 8:
-                med.append(line)
-            elif len(line) > 8:
-                dfcl.append(line)
+        fcl = [line.strip() for line in plvrs if 2 < len(line) <= 5]
+        med = [line.strip() for line in plvrs if 5 < len(line) <= 8]
+        dfcl = [line.strip() for line in plvrs if len(line) > 8]
         plvrs.close()
     return fcl, med, dfcl
 
 
 def carregar_listas_categoria(categ):
-    if categ == '1':
-        lista_cat = "listas/atores_atrizes.txt"
-    elif categ == '2':
-        lista_cat = "listas/filmes.txt"
-    elif categ == '3':
-        lista_cat = "listas/animais.txt"
-    elif categ == '4':
-        lista_cat = "listas/paises.txt"
-    else:
-        lista_cat = "listas/artistas_bandas.txt"
+    caminhos = {'1': 'listas/atores_atrizes.txt',
+                '2': 'listas/filmes.txt',
+                '3': 'listas/animais.txt',
+                '4': 'listas/paises.txt',
+                '5': 'listas/artistas_bandas.txt'}
+
+    lista_cat = caminhos.get(categ)
 
     with open(lista_cat, 'r', encoding='utf-8') as palavras_cat:
-        lista_escolha = []
-        for linha in palavras_cat:
-            linha = linha.upper().strip()
-            lista_escolha.append(linha)
+        lista_escolha = [linha.upper().strip() for linha in palavras_cat]
         plvr = choice(lista_escolha)
         palavras_cat.close()
     return plvr
@@ -309,7 +295,7 @@ def vencer(mod, cont_v, mlhr):
         if cont_v > mlhr:
             mlhr = cont_v
         with open('melhor.txt', 'w') as arq_melhor:
-            arq_melhor.write(str(mlhr))  # substitui o arquivo para manter o melhor nos próximos jogos
+            arq_melhor.write(str(mlhr))  # Substitui o arquivo para manter o melhor nos próximos jogos.
             arq_melhor.close()
         print(f'Você ganhou {cont_v}x consecutivamente.')
         print(f'Melhor até agora: {mlhr}')
@@ -373,14 +359,14 @@ acento = {'A': ['Á', 'À', 'Ã', 'Â', 'Ä'],
 emojis = {'acerto': ['😍', '😁', '🤗', '👏', '🙌', '🤞', '☺️'],
           'erro': ['😬', '😱', '😰', '😓', '😭', '😨', '😖']}
 
-# guarda o número de vitórias consecutivas (modo 1 jogador)
+# Guarda o número de vitórias consecutivas (modo 1 jogador).
 cont_vit = 0
 with open('melhor.txt', 'r') as arquivo_melhor:
-    melhor = int(arquivo_melhor.read())  # guarda o maior número de vitórias consecutivas (modo 1 jogador)
+    melhor = int(arquivo_melhor.read())  # Guarda o maior número de vitórias consecutivas (modo 1 jogador).
 
 # Início do programa.
 while True:
-    # variáveis mutáveis:
+    # Variáveis mutáveis:
     tentativas = 7
     dar_dica = True
     lista_naotem = []
