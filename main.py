@@ -343,7 +343,7 @@ pygame.mixer.music.play(-1)
 # Carrega as palavras e cria as listas das dificuldades.
 facil, medio, dificil = carregar_listas()
 
-# Dicionário para converter caractere para caractere acentuado automaticamente.
+# Dicionário para converter caractere para caractere acentuado ou cedilha automaticamente.
 acento = {'A': ['Á', 'À', 'Ã', 'Â', 'Ä'],
           'E': ['É', 'Ê', 'È'],
           'I': ['Í'],
