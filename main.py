@@ -244,7 +244,7 @@ def exibir_logo():
 
 
 def resolver_dica(resp, plvr, dar_dic):
-    # retorna novos valores de resposta, venceu, dar_dica.
+    # Retorna novos valores de resposta, venceu, dar_dica.
     if dar_dic:
         lista_dica = [n for n in range(len(resp)) if resp[n] == '_']
         subst = choice(lista_dica)
@@ -257,6 +257,46 @@ def resolver_dica(resp, plvr, dar_dic):
         tentenovamente.play()
 
     return resp, False, False
+
+
+def resolver_acentos(palp, resp):
+    # Retorna novos valores de resposta, passe.
+    if palp in acento:
+        for ltr in acento[palp]:
+            if ltr in palavra:
+                lista_tem.append(ltr)
+                for c in range(len(palavra)):
+                    if ltr == palavra[c]:
+                        resp[c] = ltr
+                        return resp, True
+
+    return resp, False
+
+
+def verificar_palpite(tent):
+    if palpite in palavra or passe:  # O 'passe' serve para aceitar o caractere acentuado como se fosse sem acento.
+        lista_tem.append(palpite)
+        correto.play()
+        print(verde('Acertou!'), f'{choice(emojis["acerto"])}')
+        for indice, letra in enumerate(palavra):
+            if letra == palpite:
+                resposta[indice] = palpite
+        if '_' not in resposta:  # Condição de vitória.
+            return resposta, tent, True, False
+        else:
+            return resposta, tent, False, False
+    else:
+        lista_naotem.append(palpite)
+        erro.play()
+        print(f'{lista_naotem}')
+        tent -= 1
+        print(vermelho('Errou!'), f'{choice(emojis["erro"])}'
+                                  f'\n Tentativas restantes: {tent}')
+        exibir_forca(tent)  # Mostra a forca
+        if tent == 0:  # Condição de derrota.
+            return resposta, tent, False, True
+        else:
+            return resposta, tent, False, False
 
 
 def vencer(mod, cont_v, mlhr):
@@ -386,35 +426,10 @@ while True:
 
         # Substitui caracteres sem acento por caracteres acentuados, caso existam.
         passe = False
-        if palpite in acento:
-            for ltr in acento[palpite]:
-                if ltr in palavra:
-                    passe = True
-                    lista_tem.append(ltr)
-                    for c in range(len(palavra)):
-                        if ltr == palavra[c]:
-                            resposta[c] = ltr
+        resposta, passe = resolver_acentos(palpite, resposta)
 
         # Verifica se o palpite está na palavra.
-        if palpite in palavra or passe:  # O 'passe' serve para aceitar o caractere acentuado como se fosse sem acento.
-            lista_tem.append(palpite)
-            correto.play()
-            print(verde('Acertou!'), f'{choice(emojis["acerto"])}')
-            for indice, letra in enumerate(palavra):
-                if letra == palpite:
-                    resposta[indice] = palpite
-            if '_' not in resposta:  # Condição de vitória.
-                venceu = True
-        else:
-            lista_naotem.append(palpite)
-            erro.play()
-            print(f'{lista_naotem}')
-            tentativas -= 1
-            print(vermelho('Errou!'), f'{choice(emojis["erro"])}'
-                                      f'\n Tentativas restantes: {tentativas}')
-            exibir_forca(tentativas)  # Mostra a forca
-            if tentativas == 0:  # Condição de derrota.
-                perdeu = True
+        resposta, tentativas, venceu, perdeu = verificar_palpite(tentativas)
 
     # Configura o 'restart'.
     while True:
