@@ -9,9 +9,18 @@ import pygame
 
 def carregar_listas():
     with open("listas/Lista-de-Palavras.txt") as plvrs:
-        fcl = [line.strip() for line in plvrs if 2 < len(line) <= 5]
-        med = [line.strip() for line in plvrs if 5 < len(line) <= 8]
-        dfcl = [line.strip() for line in plvrs if len(line) > 8]
+        fcl = []
+        med = []
+        dfcl = []
+        for line in plvrs:
+            line = line.strip()
+            if 2 < len(line) <= 5:
+                fcl.append(line)
+            elif 5 < len(line) <= 8:
+                med.append(line)
+            elif len(line) > 8:
+                dfcl.append(line)
+        plvrs.close()
     return fcl, med, dfcl
 
 
@@ -230,7 +239,11 @@ def exibir_logo():
 def resolver_dica(resp, plvr, dar_dic):
     # Retorna novos valores de resposta, venceu, dar_dica.
     if dar_dic:
-        lista_dica = [n for n in range(len(resp)) if resp[n] == '_']
+        lista_dica = []
+        for n in range(len(resp)):
+            if resp[n] == '_':
+                lista_dica.append(n)
+
         subst = choice(lista_dica)
         resp[subst] = plvr[subst]
         segredo.play()
@@ -335,9 +348,9 @@ intro = pygame.mixer.Sound('Sons/intro.mp3')
 encerrar = pygame.mixer.Sound('Sons/encerrar.mp3')
 
 # Introdução.
-intro.play()
-exibir_logo()
-sleep(2)
+# intro.play()
+# exibir_logo()
+# sleep(2)
 pygame.mixer.music.play(-1)
 
 # Carrega as palavras e cria as listas das dificuldades.
