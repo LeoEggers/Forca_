@@ -9,17 +9,11 @@ import pygame
 
 def carregar_listas():
     with open("listas/Lista-de-Palavras.txt") as plvrs:
-        fcl = []
-        med = []
-        dfcl = []
-        for line in plvrs:
-            line = line.strip()
-            if 2 < len(line) <= 5:
-                fcl.append(line)
-            elif 5 < len(line) <= 8:
-                med.append(line)
-            elif len(line) > 8:
-                dfcl.append(line)
+        linhas = [line.strip() for line in plvrs]
+        fcl = [line for line in linhas if 2 < len(line) <= 5]
+        med = [line for line in linhas if 5 < len(line) <= 8]
+        dfcl = [line for line in linhas if len(line) > 8]
+
     return fcl, med, dfcl
 
 
