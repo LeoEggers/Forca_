@@ -20,7 +20,6 @@ def carregar_listas():
                 med.append(line)
             elif len(line) > 8:
                 dfcl.append(line)
-        plvrs.close()
     return fcl, med, dfcl
 
 
