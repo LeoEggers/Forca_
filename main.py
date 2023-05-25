@@ -349,9 +349,9 @@ intro = pygame.mixer.Sound('Sons/intro.mp3')
 encerrar = pygame.mixer.Sound('Sons/encerrar.mp3')
 
 # Introdução.
-# intro.play()
-# exibir_logo()
-# sleep(2)
+intro.play()
+exibir_logo()
+sleep(2)
 pygame.mixer.music.play(-1)
 
 # Carrega as palavras e cria as listas das dificuldades.
