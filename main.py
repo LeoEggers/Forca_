@@ -9,18 +9,11 @@ import pygame
 
 def carregar_listas():
     with open("listas/Lista-de-Palavras.txt") as plvrs:
-        fcl = []
-        med = []
-        dfcl = []
-        for line in plvrs:
-            line = line.strip()
-            if 2 < len(line) <= 5:
-                fcl.append(line)
-            elif 5 < len(line) <= 8:
-                med.append(line)
-            elif len(line) > 8:
-                dfcl.append(line)
-        plvrs.close()
+        linhas = [line.strip() for line in plvrs]
+        fcl = [line for line in linhas if 2 < len(line) <= 5]
+        med = [line for line in linhas if 5 < len(line) <= 8]
+        dfcl = [line for line in linhas if len(line) > 8]
+
     return fcl, med, dfcl
 
 
@@ -54,7 +47,15 @@ def num_jogadores():
 def carregar_palavra():
     # Modo 2 jogadores: um dos jogadores escolhe a palavra.
     if modo == '2':
-        plvr = input('Escolha uma palavra: ').strip().upper()
+        while True:
+            escolha = input('Escolha uma palavra: ').strip().upper()
+            if (escolha.isalpha() or '-' in escolha or ' ' in escolha) and len(escolha) > 0:
+                break
+            else:
+                print('Tente novamente! '
+                      'Digite uma palavra sem números ou caracteres especiais (exceto hífen), por favor.')
+                tentenovamente.play()
+        plvr = escolha
         confirma.play()
 
     # Modo 1 jogador: palavra escolhida aleatoriamente, o jogador escolhe a dificuldade.
@@ -348,9 +349,9 @@ intro = pygame.mixer.Sound('Sons/intro.mp3')
 encerrar = pygame.mixer.Sound('Sons/encerrar.mp3')
 
 # Introdução.
-intro.play()
-exibir_logo()
-sleep(2)
+# intro.play()
+# exibir_logo()
+# sleep(2)
 pygame.mixer.music.play(-1)
 
 # Carrega as palavras e cria as listas das dificuldades.
