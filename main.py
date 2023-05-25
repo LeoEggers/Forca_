@@ -47,7 +47,15 @@ def num_jogadores():
 def carregar_palavra():
     # Modo 2 jogadores: um dos jogadores escolhe a palavra.
     if modo == '2':
-        plvr = input('Escolha uma palavra: ').strip().upper()
+        while True:
+            escolha = input('Escolha uma palavra: ').strip().upper()
+            if (escolha.isalpha() or '-' in escolha or ' ' in escolha) and len(escolha) > 0:
+                break
+            else:
+                print('Tente novamente! '
+                      'Digite uma palavra sem números ou caracteres especiais (exceto hífen), por favor.')
+                tentenovamente.play()
+        plvr = escolha
         confirma.play()
 
     # Modo 1 jogador: palavra escolhida aleatoriamente, o jogador escolhe a dificuldade.
