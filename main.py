@@ -266,7 +266,7 @@ def resolver_acentos(palp, resp):
                 for c in range(len(palavra)):
                     if ltr == palavra[c]:
                         resp[c] = ltr
-                        return resp, True
+                return resp, True
 
     return resp, False
 
@@ -421,7 +421,6 @@ while True:
             continue
 
         # Substitui caracteres sem acento por caracteres acentuados, caso existam.
-        passe = False
         resposta, passe = resolver_acentos(palpite, resposta)
 
         # Verifica se o palpite está na palavra.
